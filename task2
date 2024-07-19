@@ -1,0 +1,101 @@
+ Java program to track and manage student grades.
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class StudentGrades {
+    private Map<String, Double> grades;
+    private static final Map<String, Double> GPA_SCALE;
+
+    static {
+        GPA_SCALE = new HashMap<>();
+        GPA_SCALE.put("A", 4.0);
+        GPA_SCALE.put("A-", 3.7);
+        GPA_SCALE.put("B+", 3.3);
+        GPA_SCALE.put("B", 3.0);
+        GPA_SCALE.put("B-", 2.7);
+        GPA_SCALE.put("C+", 2.3);
+        GPA_SCALE.put("C", 2.0);
+        GPA_SCALE.put("C-", 1.7);
+        GPA_SCALE.put("D+", 1.3);
+        GPA_SCALE.put("D", 1.0);
+        GPA_SCALE.put("F", 0.0);
+    }
+
+    public StudentGrades() {
+        grades = new HashMap<>();
+    }
+
+    public void addGrade(String subject, double grade) {
+        grades.put(subject, grade);
+    }
+
+    public double calculateAverage() {
+        double total = 0;
+        for (double grade : grades.values()) {
+            total += grade;
+        }
+        return grades.size() == 0 ? 0 : total / grades.size();
+    }
+
+    public String calculateLetterGrade(double average) {
+        if (average >= 90) {
+            return "A";
+        } else if (average >= 85) {
+            return "A-";
+        } else if (average >= 80) {
+            return "B+";
+        } else if (average >= 75) {
+            return "B";
+        } else if (average >= 70) {
+            return "B-";
+        } else if (average >= 65) {
+            return "C+";
+        } else if (average >= 60) {
+            return "C";
+        } else if (average >= 55) {
+            return "C-";
+        } else if (average >= 50) {
+            return "D+";
+        } else if (average >= 45) {
+            return "D";
+        } else {
+            return "F";
+        }
+    }
+
+    public double calculateGPA(String letterGrade) {
+        return GPA_SCALE.getOrDefault(letterGrade, 0.0);
+    }
+
+    public void displayGrades() {
+        System.out.println("Subject Grades:");
+        for (Map.Entry<String, Double> entry : grades.entrySet()) {
+            System.out.println(entry.getKey() + ": " + entry.getValue());
+        }
+        double average = calculateAverage();
+        String letterGrade = calculateLetterGrade(average);
+        double gpa = calculateGPA(letterGrade);
+        System.out.println("Average Grade: " + average);
+        System.out.println("Letter Grade: " + letterGrade);
+        System.out.println("GPA: " + gpa);
+    }
+
+    public static void main(String[] args) {
+        StudentGrades studentGrades = new StudentGrades();
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter subject name (or 'exit' to quit):");
+            String subject = scanner.nextLine();
+            if (subject.equalsIgnoreCase("exit")) {
+                break;
+            }
+            System.out.println("Enter grade for " + subject + ":");
+            double grade = scanner.nextDouble();
+            scanner.nextLine();  // consume the newline
+            studentGrades.addGrade(subject, grade);
+        }
+        studentGrades.displayGrades();
+        scanner.close();
+    }
+}
